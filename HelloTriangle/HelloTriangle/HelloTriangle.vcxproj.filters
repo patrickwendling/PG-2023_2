@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{d2d65f51-99e7-4492-94c5-5658c8357dc6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -29,5 +32,16 @@
     <ClInclude Include="..\..\Common\include\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
+=======
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\shaders\helloTriangle.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\shaders\helloTriangle.vs">
+      <Filter>Shaders</Filter>
+    </None>
+>>>>>>> c56da08bc8ac06923e8f1ff324585856041c95fd
   </ItemGroup>
 </Project>
