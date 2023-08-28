@@ -19,6 +19,8 @@ using namespace std;
 // GLFW
 #include <GLFW/glfw3.h>
 
+//Classe para manpulaçção dos shaders
+#include "Shader.h"
 
 // Protótipo da função de callback de teclado
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
