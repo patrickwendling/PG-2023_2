@@ -32,7 +32,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 int setupGeometry();
 
 // Dimensões da janela (pode ser alterado em tempo de execução)
-const GLuint WIDTH = 800, HEIGHT = 600;
+const GLuint WIDTH = 800, HEIGHT = 800;
 
 // Função que cria o circulo
 void buildCircle(float radius, int vCount, std::vector<glm::vec3>* vertices)
@@ -133,7 +133,7 @@ int main()
 
 	// Gera os vertices para a construcao do circulo, o qual foi definido para 8 lados
 	std::vector<glm::vec3> vertices;
-	buildCircle(1, 8, &vertices);
+	buildCircle(1, 5, &vertices);
 	GLuint VAOCircle = setupCircle(vertices);
 	
 	// Enviando a cor desejada (vec4) para o fragment shader
