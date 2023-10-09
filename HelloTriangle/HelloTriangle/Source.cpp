@@ -10,11 +10,14 @@
 #include <iostream>
 #include <string>
 #include <assert.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include "Shader.h"
 
 using namespace std;
-
-//Classe para manipulação dos shaders
-#include "Shader.h"
 
 // Protótipo da função de callback de teclado
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -69,17 +72,18 @@ int main()
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
 
-
 	// Compilando e buildando o programa de shader
 	Shader shader("../shaders/helloTriangle.vs", "../shaders/helloTriangle.fs");
 
 	// Gerando um buffer simples, com a geometria de um triângulo
 	GLuint VAO = setupGeometry();
-	
-	// Enviando a cor desejada (vec4) para o fragment shader
-	// Utilizamos a variáveis do tipo uniform em GLSL para armazenar esse tipo de info
-	// que não está nos buffers
-	// GLint colorLoc = glGetUniformLocation(shader.ID, "inputColor");
+
+	glm::mat4 projection = glm::mat4(1); //matriz identidade
+
+	projection = glm::ortho(-10.0, 10.0, -10.0, 10.0, -1.0, 1.0);
+
+	shader.Use();
+	shader.setMat4("projection", glm::value_ptr(projection));
 	
 	shader.Use();
 	
