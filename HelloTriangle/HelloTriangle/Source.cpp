@@ -85,6 +85,17 @@ int main()
 
 	shader.Use();
 	shader.setMat4("projection", glm::value_ptr(projection));
+
+	glm::vec4 colors[] = {
+	glm::vec4(0.0, 0.0, 0.0, 1.0),
+	glm::vec4(0.0, 0.0, 1.0, 1.0),
+	glm::vec4(0.0, 1.0, 1.0, 1.0),
+	glm::vec4(1.0, 0.0, 1.0, 1.0),
+	glm::vec4(0.0, 1.0, 0.0, 1.0),
+	glm::vec4(1.0, 1.0, 0.0, 1.0),
+	glm::vec4(1.0, 0.0, 0.0, 1.0),
+	glm::vec4(1.0, 1.0, 1.0, 1.0)
+	};
 	
 	// Loop da aplicação - "game loop"
 	while (!glfwWindowShouldClose(window))
@@ -93,6 +104,7 @@ int main()
 		glfwPollEvents();
 
 		glfwGetFramebufferSize(window, &width, &height);
+		glViewport(0, 0, width, height);
 
 		// Limpa o buffer de cor
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //cor de fundo
@@ -101,44 +113,28 @@ int main()
 		glLineWidth(10);
 		glPointSize(20);
 
-		// Conectando ao buffer de geometria
-		glBindVertexArray(VAO);
-
 		//matriz identidade
-		glm::mat4 model = glm::mat4(1);
-		model = glm::translate(model, glm::vec3(600.0, 100.0, 0.0));
-		model = glm::scale(model, glm::vec3(100.0, 75.0, 1.0));
-		shader.setMat4("model", glm::value_ptr(model));
-		glDrawArrays(GL_TRIANGLES, 0, 21);
+		glm::mat4 model = glm::mat4(1); 
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+				// Conectando ao buffer de geometria
+				glBindVertexArray(VAO);
+				model = glm::mat4(1);
+				model = glm::translate(model, glm::vec3(100.0 * j, 100.0 * i, 0.0));
+				model = glm::scale(model, glm::vec3(100.0, 100.0, 1.0));
 
-		//Desconectando o buffer de geometria
-		glBindVertexArray(0);
+				shader.setMat4("model", glm::value_ptr(model));
+				int idxColor = j - i;
+				if (idxColor < 0)
+					idxColor = 8 + idxColor;
+				shader.setVec4("inputColor", colors[idxColor].r, colors[idxColor].g, colors[idxColor].b, colors[idxColor].a);
+				
+				glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		//Conectando ao buffer de geometria
-		glBindVertexArray(VAO);
-
-		//matriz identidade
-		model = glm::mat4(1);
-		model = glm::translate(model, glm::vec3(400.0, 300.0, 0.0));
-		model = glm::scale(model, glm::vec3(100.0, 75.0, 1.0));
-		shader.setMat4("model", glm::value_ptr(model));
-		glDrawArrays(GL_TRIANGLES, 0, 21);
-
-		//Desconectando o buffer de geometria
-		glBindVertexArray(0);
-
-		//Conectando ao buffer de geometria
-		glBindVertexArray(VAO);
-
-		//matriz identidade
-		model = glm::mat4(1);
-		model = glm::translate(model, glm::vec3(200.0, 500.0, 0.0));
-		model = glm::scale(model, glm::vec3(100.0, 75.0, 1.0));
-		shader.setMat4("model", glm::value_ptr(model));
-		glDrawArrays(GL_TRIANGLES, 0, 21);
-
-		// Desconectando o buffer de geometria
-		glBindVertexArray(0);
+				//Desconectando o buffer de geometria
+				glBindVertexArray(0); 
+			}
+		}
 
 		// Troca os buffers da tela
 		glfwSwapBuffers(window);
@@ -171,38 +167,13 @@ int setupGeometry()
 	// Cada atributo do vértice (coordenada, cores, coordenadas de textura, normal, etc)
 	// Pode ser arazenado em um VBO único ou em VBOs separados
 	GLfloat vertices[] = {
-		// parede
-		-1.0,  0.0, 0.0, 1.0, 0.5, 0.0,
-		-1.0, -1.0, 0.0, 1.0, 0.5, 0.0,
-		 1.0, -1.0, 0.0, 1.0, 0.5, 0.0,
+		0.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		0.0, 1.0, 0.0,
 
-		 1.0,  0.0, 0.0, 1.0, 0.5, 0.0,
-		 1.0, -1.0, 0.0, 1.0, 0.5, 0.0,
-		-1.0,  0.0, 0.0, 1.0, 0.5, 0.0,
-
-		// telhado
-		-1.0, 0.0, 0.0, 0.30, 0.0, 0.0,
-		 0.0, 1.0, 0.0, 0.30, 0.0, 0.0,
-		 1.0, 0.0, 0.0, 0.30, 0.0, 0.0,
-
-		// janela
-		-0.4, -0.40, 0.0, 1.0, 1.0, 1.0,
-		-0.4, -0.15, 0.0, 1.0, 1.0, 1.0,
-		-0.7, -0.40, 0.0, 1.0, 1.0, 1.0,
-
-		-0.4, -0.15, 0.0, 1.0, 1.0, 1.0,
-		-0.7, -0.40, 0.0, 1.0, 1.0, 1.0,
-		-0.7, -0.15, 0.0, 1.0, 1.0, 1.0,
-
-		// porta
-		 0.2, -1.0, 0.0, 0.30, 0.0, 0.0,
-		 0.2, -0.5, 0.0, 0.30, 0.0, 0.0,
-		-0.2, -1.0, 0.0, 0.30, 0.0, 0.0,
-
-		-0.2, -1.0, 0.0, 0.30, 0.0, 0.0,
-		-0.2, -0.5, 0.0, 0.30, 0.0, 0.0,
-		 0.2, -0.5, 0.0, 0.30, 0.0, 0.0,
-
+		0.0, 1.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 1.0, 0.0,
 	};
 
 	GLuint VBO, VAO;
@@ -227,12 +198,8 @@ int setupGeometry()
 	// Deslocamento a partir do byte zero 
 
 	//Atributo 0 - Posição x y z
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
-
-	//Atributo 1 - Cor r g b
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
 
 	// Observe que isso é permitido, a chamada para glVertexAttribPointer registrou o VBO como o objeto de buffer de vértice 
 	// atualmente vinculado - para que depois possamos desvincular com segurança
