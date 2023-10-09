@@ -78,13 +78,20 @@ int main()
 	// Gerando um buffer simples, com a geometria de um triângulo
 	GLuint VAO = setupGeometry();
 
-	glm::mat4 projection = glm::mat4(1); //matriz identidade
+	//matriz identidade
+	glm::mat4 projection = glm::mat4(1); 
+	glm::mat4 model = glm::mat4(1);
+
+	model = glm::translate(model, glm::vec3(400.0, 300.0, 0.0));
+	model = glm::scale(model, glm::vec3(300.0, 225.0, 1.0));
 
 	projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, -1.0f, 1.0f);
 
 	shader.Use();
+
 	shader.setMat4("projection", glm::value_ptr(projection));
-	
+	shader.setMat4("model", glm::value_ptr(model));
+
 	shader.Use();
 	
 	// Loop da aplicação - "game loop"
@@ -94,7 +101,6 @@ int main()
 		glfwPollEvents();
 
 		glfwGetFramebufferSize(window, &width, &height);
-		glViewport(width / 2, height / 2, width / 2, height / 2);
 
 		// Limpa o buffer de cor
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //cor de fundo
@@ -106,13 +112,12 @@ int main()
 		// Conectando ao buffer de geometria
 		glBindVertexArray(VAO);
 
-		//matriz identidade
-		glm::mat4 model = glm::mat4(1); //matriz identidade
-		model = glm::translate(model, glm::vec3(400.0, 300.0, 0.0));
-		model = glm::scale(model, glm::vec3(300.0, 225.0, 1.0));
-		shader.setMat4("model", glm::value_ptr(model));
-
-		glDrawArrays(GL_TRIANGLES, 0, 21);
+		for (int w = 0; w < width; w += width / 2) {
+			for (int h = 0; h < height; h += height / 2) {
+				glViewport(w, h, width / 2, height / 2);
+				glDrawArrays(GL_TRIANGLES, 0, 21);
+			}
+		}
 
 		// Desconectando o buffer de geometria
 		glBindVertexArray(0);
