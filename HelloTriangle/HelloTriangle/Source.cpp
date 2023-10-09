@@ -39,16 +39,14 @@ void buildCircle(float radius, float ang, int vCount, std::vector<glm::vec3>* ve
 {
 	float angle = ang / vCount;
 
-	int triangleCount = vCount - 2;
+	int triangleCount = vCount;
 
 	std::vector<glm::vec3> temp;
-
-	temp.push_back(glm::vec3(0, 0, 0));
 
 	// positions
 	for (int i = 0; i < vCount; i++)
 	{
-		float currentAngle = angle * i + 68.0f; // alinhar a pizza no meio
+		float currentAngle = angle * i;
 		float x = radius * cos(glm::radians(currentAngle));
 		float y = radius * sin(glm::radians(currentAngle));
 		float z = 0.0f;
@@ -58,9 +56,11 @@ void buildCircle(float radius, float ang, int vCount, std::vector<glm::vec3>* ve
 
 	for (int i = 0; i < triangleCount; i++)
 	{
-		vertices->push_back(temp[0]);
-		vertices->push_back(temp[i + 1]);
-		vertices->push_back(temp[i + 2]);
+		vertices->push_back(temp[i]);
+		int j = i + 2;
+		if (j >= triangleCount)
+			j = j - triangleCount;
+		vertices->push_back(temp[j]);
 	}
 }
 
@@ -136,8 +136,8 @@ int main()
 
 	// Gera os vertices para a construcao do circulo, o qual foi definido para 8 lados
 	std::vector<glm::vec3> vertices;
-	float anguloBase = 45.0f;
-	buildCircle(1, anguloBase, 42, &vertices);
+	float anguloBase = 360.0f;
+	buildCircle(1, anguloBase, 7, &vertices);
 	GLuint VAOCircle = setupCircle(vertices);
 	
 	// Enviando a cor desejada (vec4) para o fragment shader
@@ -168,7 +168,7 @@ int main()
 
 		glBindVertexArray(VAOCircle);
 
-		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+		glDrawArrays(GL_LINES, 0, vertices.size());
 
 		// Desconectando o buffer de geometria
 		glBindVertexArray(0);
