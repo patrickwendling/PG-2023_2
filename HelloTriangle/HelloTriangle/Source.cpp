@@ -103,7 +103,7 @@ int main()
 
 		// Chamada de desenho - drawcall
 		// Poligono Preenchido - GL_TRIANGLES
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawArrays(GL_LINE_LOOP, 0, 6);
 
 		//Desconectando o buffer de geometria
 		glBindVertexArray(0);
