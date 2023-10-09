@@ -48,7 +48,7 @@ void buildCircle(float radius, float ang, int vCount, std::vector<glm::vec3>* ve
 	// positions
 	for (int i = 0; i < vCount; i++)
 	{
-		float currentAngle = angle * i + 60.0f; // alinhar a boca no meio
+		float currentAngle = angle * i + 68.0f; // alinhar a pizza no meio
 		float x = radius * cos(glm::radians(currentAngle));
 		float y = radius * sin(glm::radians(currentAngle));
 		float z = 0.0f;
@@ -136,7 +136,7 @@ int main()
 
 	// Gera os vertices para a construcao do circulo, o qual foi definido para 8 lados
 	std::vector<glm::vec3> vertices;
-	float anguloBase = 270.0f;
+	float anguloBase = 45.0f;
 	buildCircle(1, anguloBase, 42, &vertices);
 	GLuint VAOCircle = setupCircle(vertices);
 	
