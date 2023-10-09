@@ -35,17 +35,20 @@ int setupGeometry();
 const GLuint WIDTH = 800, HEIGHT = 800;
 
 // Função que cria o circulo
-void buildCircle(float radius, int vCount, std::vector<glm::vec3>* vertices)
+void buildCircle(float radius, float ang, int vCount, std::vector<glm::vec3>* vertices)
 {
-	float angle = 360.0f / vCount;
+	float angle = ang / vCount;
 
 	int triangleCount = vCount - 2;
 
 	std::vector<glm::vec3> temp;
+
+	temp.push_back(glm::vec3(0, 0, 0));
+
 	// positions
 	for (int i = 0; i < vCount; i++)
 	{
-		float currentAngle = angle * i;
+		float currentAngle = angle * i + 60.0f; // alinhar a boca no meio
 		float x = radius * cos(glm::radians(currentAngle));
 		float y = radius * sin(glm::radians(currentAngle));
 		float z = 0.0f;
@@ -133,7 +136,8 @@ int main()
 
 	// Gera os vertices para a construcao do circulo, o qual foi definido para 8 lados
 	std::vector<glm::vec3> vertices;
-	buildCircle(1, 5, &vertices);
+	float anguloBase = 270.0f;
+	buildCircle(1, anguloBase, 42, &vertices);
 	GLuint VAOCircle = setupCircle(vertices);
 	
 	// Enviando a cor desejada (vec4) para o fragment shader
