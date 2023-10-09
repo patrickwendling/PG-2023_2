@@ -5,11 +5,12 @@ layout (location = 1) in vec3 color;
 
 out vec3 vertexColor;
 uniform mat4 projection;
+uniform mat4 model;
 
 void main()
 {
 	
 	//...pode ter mais linhas de código aqui!
-	gl_Position = projection * vec4(position, 1.0);
+	gl_Position = projection * model * vec4(position, 1.0);
 	vertexColor = color;
 }
