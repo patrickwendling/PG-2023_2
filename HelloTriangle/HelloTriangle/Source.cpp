@@ -80,7 +80,7 @@ int main()
 
 	glm::mat4 projection = glm::mat4(1); //matriz identidade
 
-	projection = glm::ortho(0.0f, 800.0f, 600.0f, 0.0f, -1.0f, 1.0f);
+	projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, -1.0f, 1.0f);
 
 	shader.Use();
 	shader.setMat4("projection", glm::value_ptr(projection));
@@ -93,6 +93,9 @@ int main()
 		// Checa se houveram eventos de input (key pressed, mouse moved etc.) e chama as funções de callback correspondentes
 		glfwPollEvents();
 
+		glfwGetFramebufferSize(window, &width, &height);
+		glViewport(width / 2, height / 2, width / 2, height / 2);
+
 		// Limpa o buffer de cor
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //cor de fundo
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -104,9 +107,9 @@ int main()
 		glBindVertexArray(VAO);
 
 		//matriz identidade
-		glm::mat4 model = glm::mat4(1); 
+		glm::mat4 model = glm::mat4(1); //matriz identidade
 		model = glm::translate(model, glm::vec3(400.0, 300.0, 0.0));
-		model = glm::scale(model, glm::vec3(400.0, 300.0, 1.0));
+		model = glm::scale(model, glm::vec3(300.0, 225.0, 1.0));
 		shader.setMat4("model", glm::value_ptr(model));
 
 		glDrawArrays(GL_TRIANGLES, 0, 21);
