@@ -10,17 +10,8 @@
 #include <iostream>
 #include <string>
 #include <assert.h>
-#include <glm/vec3.hpp>
-#include <glm/glm.hpp>
-#include <vector>
 
 using namespace std;
-
-// GLAD
-#include <glad/glad.h>
-
-// GLFW
-#include <GLFW/glfw3.h>
 
 //Classe para manipulação dos shaders
 #include "Shader.h"
@@ -32,39 +23,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 int setupGeometry();
 
 // Dimensões da janela (pode ser alterado em tempo de execução)
-const GLuint WIDTH = 800, HEIGHT = 800;
-
-// Função que cria o espiral
-void buildSpiral(int vCount, std::vector<glm::vec3>* vertices) {
-	float x = 0.0f, y = 0.0f, angle = 0.0f, b = 0.001f;
-	for (int i = 0; i < vCount; i++)
-	{
-		angle = 0.1 * i;
-		x = (b * angle) * cos(glm::radians(angle));
-		y = (b * angle) * sin(glm::radians(angle));
-
-		vertices->push_back(glm::vec3(x, y, 0.0f));
-	}
-}
-
-// Função que define o circulo na hora de renderizar
-int setupCircle(std::vector<glm::vec3> vertices) {
-	GLuint vertexBuffer;
-	GLuint vertexArray;
-	glGenVertexArrays(1, &vertexArray);
-	glGenBuffers(1, &vertexBuffer);
-
-	glBindVertexArray(vertexArray);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-
-	// dairenin vertex bilgileri vertex buffer a koplayanıyor
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
-	glEnableVertexAttribArray(0);
-	return vertexArray;
-}
+const GLuint WIDTH = 800, HEIGHT = 600;
 
 // Função MAIN
 int main()
@@ -116,16 +75,11 @@ int main()
 
 	// Gerando um buffer simples, com a geometria de um triângulo
 	GLuint VAO = setupGeometry();
-
-	// Gera os vertices para a construcao do circulo, o qual foi definido para 8 lados
-	std::vector<glm::vec3> vertices;
-	buildSpiral(10000, &vertices);
-	GLuint VAOCircle = setupCircle(vertices);
 	
 	// Enviando a cor desejada (vec4) para o fragment shader
 	// Utilizamos a variáveis do tipo uniform em GLSL para armazenar esse tipo de info
 	// que não está nos buffers
-	GLint colorLoc = glGetUniformLocation(shader.ID, "inputColor");
+	// GLint colorLoc = glGetUniformLocation(shader.ID, "inputColor");
 	
 	shader.Use();
 	
@@ -140,17 +94,13 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glLineWidth(10);
-		glPointSize(5); // diminuido a grossura do ponto
+		glPointSize(20);
 
 		// Conectando ao buffer de geometria
-		glBindVertexArray(VAO); 
+		glBindVertexArray(VAO);
 
-		// enviando cor para variável uniform inputColor
-		shader.setVec4("inputColor", 0.0f, 0.0f, 1.0f, 1.0f);
-
-		glBindVertexArray(VAOCircle);
-
-		glDrawArrays(GL_POINTS, 0, vertices.size());
+		glDrawArrays(GL_LINE_LOOP, 0, 3);
+		glDrawArrays(GL_POINTS, 3, 3);
 
 		// Desconectando o buffer de geometria
 		glBindVertexArray(0);
@@ -186,10 +136,13 @@ int setupGeometry()
 	// Cada atributo do vértice (coordenada, cores, coordenadas de textura, normal, etc)
 	// Pode ser arazenado em um VBO único ou em VBOs separados
 	GLfloat vertices[] = {
-		//x   y     z
-		-0.5, -0.75, 0.0, //v0
-		 0.5, -0.75, 0.0, //v1
-		 0.0,  0.0,  0.0, //v2 
+		 0.0,  0.6, 0.0, 0.0, 0.0, 1.0,
+		-0.6, -0.5, 0.0, 0.0, 0.0, 1.0,
+		 0.6, -0.3, 0.0, 0.0, 0.0, 1.0,
+
+		 0.0,  0.6, 0.0, 1.0, 0.0, 0.0,
+		-0.6, -0.5, 0.0, 0.0, 1.0, 0.0,
+		 0.6, -0.3, 0.0, 0.0, 0.0, 1.0
 	};
 
 	GLuint VBO, VAO;
@@ -212,8 +165,14 @@ int setupGeometry()
 	// Se está normalizado (entre zero e um)
 	// Tamanho em bytes 
 	// Deslocamento a partir do byte zero 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+
+	//Atributo 0 - Posição x y z
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
+
+	//Atributo 1 - Cor r g b
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(1);
 
 	// Observe que isso é permitido, a chamada para glVertexAttribPointer registrou o VBO como o objeto de buffer de vértice 
 	// atualmente vinculado - para que depois possamos desvincular com segurança
