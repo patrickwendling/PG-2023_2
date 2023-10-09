@@ -98,25 +98,15 @@ int main()
 
 		glBindVertexArray(VAO); //Conectando ao buffer de geometria
 
+		//enviando cor para variável uniform inputColor
 		shader.setVec4("inputColor", 0.0f, 0.0f, 1.0f, 1.0f);
-		// glUniform4f(colorLoc, 0.0f, 0.0f, 1.0f, 1.0f); //enviando cor para variável uniform inputColor
 
 		// Chamada de desenho - drawcall
 		// Poligono Preenchido - GL_TRIANGLES
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		// Chamada de desenho - drawcall
-		// Contorno - GL_LINE_LOOP
-		shader.setVec4("inputColor", 1.0f, 1.0f, 0.0f, 1.0f);
-		glDrawArrays(GL_LINE_LOOP, 0, 6);
-		//glDrawArrays(GL_LINE_LOOP, 3, 3);
-
-		// Chamada de desenho - drawcall
-		// Pontos - GL_POINTS
-		shader.setVec4("inputColor", 1.0f, 0.0f, 1.0f, 1.0f);
-		glDrawArrays(GL_POINTS, 0, 6);
-
-		glBindVertexArray(0); //Desconectando o buffer de geometria
+		//Desconectando o buffer de geometria
+		glBindVertexArray(0);
 
 		// Troca os buffers da tela
 		glfwSwapBuffers(window);
