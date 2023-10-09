@@ -34,33 +34,16 @@ int setupGeometry();
 // Dimensões da janela (pode ser alterado em tempo de execução)
 const GLuint WIDTH = 800, HEIGHT = 800;
 
-// Função que cria o circulo
-void buildCircle(float radius, float ang, int vCount, std::vector<glm::vec3>* vertices)
-{
-	float angle = ang / vCount;
-
-	int triangleCount = vCount;
-
-	std::vector<glm::vec3> temp;
-
-	// positions
+// Função que cria o espiral
+void buildSpiral(int vCount, std::vector<glm::vec3>* vertices) {
+	float x = 0.0f, y = 0.0f, angle = 0.0f, b = 0.001f;
 	for (int i = 0; i < vCount; i++)
 	{
-		float currentAngle = angle * i;
-		float x = radius * cos(glm::radians(currentAngle));
-		float y = radius * sin(glm::radians(currentAngle));
-		float z = 0.0f;
+		angle = 0.1 * i;
+		x = (b * angle) * cos(glm::radians(angle));
+		y = (b * angle) * sin(glm::radians(angle));
 
-		temp.push_back(glm::vec3(x, y, z));
-	}
-
-	for (int i = 0; i < triangleCount; i++)
-	{
-		vertices->push_back(temp[i]);
-		int j = i + 2;
-		if (j >= triangleCount)
-			j = j - triangleCount;
-		vertices->push_back(temp[j]);
+		vertices->push_back(glm::vec3(x, y, 0.0f));
 	}
 }
 
@@ -75,7 +58,7 @@ int setupCircle(std::vector<glm::vec3> vertices) {
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 
 	// dairenin vertex bilgileri vertex buffer a koplayanıyor
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * vertices.size(), &vertices[0], GL_STATIC_DRAW); // asd
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
@@ -136,8 +119,7 @@ int main()
 
 	// Gera os vertices para a construcao do circulo, o qual foi definido para 8 lados
 	std::vector<glm::vec3> vertices;
-	float anguloBase = 360.0f;
-	buildCircle(1, anguloBase, 7, &vertices);
+	buildSpiral(10000, &vertices);
 	GLuint VAOCircle = setupCircle(vertices);
 	
 	// Enviando a cor desejada (vec4) para o fragment shader
@@ -158,7 +140,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glLineWidth(10);
-		glPointSize(20);
+		glPointSize(5); // diminuido a grossura do ponto
 
 		// Conectando ao buffer de geometria
 		glBindVertexArray(VAO); 
@@ -168,7 +150,7 @@ int main()
 
 		glBindVertexArray(VAOCircle);
 
-		glDrawArrays(GL_LINES, 0, vertices.size());
+		glDrawArrays(GL_POINTS, 0, vertices.size());
 
 		// Desconectando o buffer de geometria
 		glBindVertexArray(0);
